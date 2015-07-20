@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Cache-Control" content="no-siteapp"><!--禁止百度转码及贴小广告-->
+<script>
+	eval(function(p,a,c,k,e,d){e=function(c){return(c<a?"":e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--)d[e(c)]=k[c]||e(c);k=[function(e){return d[e]}];e=function(){return'\\w+'};c=1;};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p;}('o(e.a.r().k(/h/i)=="h"){c.6(\'<7 9="8" f="2=n-2,l-3=1,m-3=1">\')}p o(/b/.t(e.a)&&u(e.a.k(/b\\s(\\d|\\.)+/g)[0].q(\'b \',\'\'))<4){c.6(\'<7 9="8" f="2=j,l-3=0.5,m-3=0.5">\')}p{c.6(\'<7 9="8" f="y-x=n-v,2=j,A-z=w">\')}',37,37,'||width|scale|||write|meta|viewport|name|userAgent|Android|document||navigator|content||ipad||750|match|maximum|minimum|device|if|else|replace|toLowerCase||test|parseFloat|dpi|no|densitydpi|target|scalable|user'.split('|'),0,{}));
+</script>
+<meta name="format-detection" content="telephone=no" />
+<meta name="msapplication-tap-highlight" content="no" />
+<title>梦幻H5网站</title>
+<meta name="Keywords" content="" />
+<meta name="Description" content="" />
+<style type="text/css">
+	*{margin:0;padding:0;}
+	html,body{width:100%;height: 100%;}
+
+	#main{
+		position: absolute;
+		width: 100%;height: 100%;overflow: hidden;
+	}
+</style>
+</head>
+<body>
+<div id="main">
+	<canvas id="pagebg"></canvas>
+</div>
+
+<script type="text/javascript" src="script/animation.js"></script>
+<script type="text/javascript">
+	var cvs=document.getElementById('pagebg'),
+		ctx=cvs.getContext('2d');
+	cvs.width=window.innerWidth;
+	cvs.height=window.innerHeight;
+
+	//应用
+	var animHander=new keyAnimation();
+	//添加canvas动画元素
+	animHander.createAnim({
+        id:"cvsbg",
+        type:"context",
+        life:Infinity,
+        w:cvs.width,
+        h:cvs.height,
+        startDeg:0,
+        color:['rgba(58,58,58,1)','rgba(255,255,255,1)'],
+        excuTimes:0,// draw方法的调用次数
+        canvas:cvs,
+        ctx:ctx,
+        draw:function(timestamp,dt){
+        	console.log("开始时间："+this.startTime);
+        	console.log("当前时间点："+timestamp);
+        	console.log("当前记录时间点："+this.timestamp);
+        	console.log("距上次执行时间差："+dt);
+        	console.log("运行时间："+this.curTime);
+        	console.log("暂停时间："+this.pauseTime);
+
+            if(this.display=='block' && this.alpha>0){
+                var halfX=this.w>>1,
+                    halfY=this.h>>1;
+                var r=Math.sqrt(halfX*halfX+halfY*halfY)+1;
+                //先填充黑色背景 
+                this.ctx.save();
+                this.ctx.fillStyle='#3a3a3a';
+                this.ctx.fillRect(0,0,this.w,this.h);
+                for(var i=0;i<24;i++){
+                    var sD=i*15+this.startDeg;
+                    var x0=halfX+r*Math.cos(sD*Math.PI/180),
+                        y0=halfY+r*Math.sin(sD*Math.PI/180);
+                    this.ctx.fillStyle= (i%2 == 0) ? this.color[1]: this.color[0];
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(halfX,halfY);
+                    this.ctx.arc(halfX,halfY,r,sD*Math.PI/180,(15+sD)*Math.PI/180,false);
+                    this.ctx.closePath();
+                    this.ctx.fill();
+                }
+                this.ctx.restore();
+                //时间记录
+                this.curTime+=dt;
+                this.startDeg+=1;
+                this.startDeg%=360;
+            }
+        }
+    });
+	/*
+	 *	说明：
+	 *		此时 这个canvas动画并没有调用 clearRect()方法。
+	 *		如果需要清除canvas，则需要创建一个 Canvas对象.
+	 *		此时可以创建一个 type = ‘Canvas’的 动画对象，并直接在 draw方法中绘制动画帧
+	 *		或者可以单独创建type = ‘Canvas’的对象负责clearRect，而type="context"的对象负责动画帧的绘制
+	 *		推荐直接在type = ‘Canvas’的 动画对象中绘制动画帧
+	 */
+	//删除这个动画对象
+	function delAnimHandler(){
+		//"cvsbg" 为 createAnim时指定的 id
+		animHander.del("cvsbg");
+	}
+</script>
+</body>
+</html>
